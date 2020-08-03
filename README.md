@@ -58,6 +58,6 @@ I would like to thank the following people/projects/resources:
 
 ## License
 
-[MIT](LICENSE) copyright (c) 2020 [thadjcole@gmail.com](mailto:thadjcole@gmail.com).
+[MIT](LICENSE) copyright (c) 2020 [Thaddeus Cole](mailto:thadjcole@gmail.com).
 
 [back to Table of Contents](#table-of-contents)
