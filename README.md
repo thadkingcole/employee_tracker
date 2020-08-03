@@ -1,5 +1,6 @@
 # Employee Tracker
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed259696f0fe45869a987a43be9f1829)](https://www.codacy.com/manual/thadkingcole/employee_tracker?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thadkingcole/employee_tracker&amp;utm_campaign=Badge_Grade)
 ![GitHub top language](https://img.shields.io/github/languages/top/thadkingcole/employee_tracker)
 [![GitHub license](https://img.shields.io/github/license/thadkingcole/employee_tracker)](LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)
