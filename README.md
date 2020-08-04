@@ -55,6 +55,8 @@ Please direct any and all questions to [thadkingcole](https://github.com/thadkin
 
 I would like to thank the following people/projects/resources:
 
+- [manytools.org ascii banner generator](https://manytools.org/hacker-tools/ascii-banner/)
+
 [back to Table of Contents](#table-of-contents)
 
 ## License
