@@ -2,13 +2,13 @@ DROP DATABASE IF EXISTS employees;
 CREATE DATABASE employees;
 USE employees;
 -- department table
-CREATE TABLE department(
+CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     PRIMARY KEY (id)
 );
 -- role table
-CREATE TABLE role(
+CREATE TABLE role (
     id INT NOT NULL AUTO_INCREMENT,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL NOT NULL,

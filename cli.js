@@ -1,5 +1,6 @@
 // global variables ========================================================= //
 // required modules
+const cTable = require("console.table")
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 
@@ -14,18 +15,23 @@ const connection = mysql.createConnection({
 
 // functions ================================================================ //
 function stopCLI() {
-  console.log("exiting...")
+  console.log("exiting...");
   connection.end();
 }
 
 function startCLI() {
-  console.log("connection successful!");
-  stopCLI();
+  const query = "SELECT * FROM employee"
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    stopCLI();
+  })
 }
 
 // main ===================================================================== //
 // connect to mysql & start app
-connection.connect(function(err) {
+connection.connect(function (err) {
   if (err) throw err;
+  console.log("connection successful!");
   startCLI();
-})
+});
