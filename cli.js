@@ -1,8 +1,8 @@
 // global variables ========================================================= //
 // required modules
-const cTable = require("console.table")
-const inquirer = require("inquirer");
-const mysql = require("mysql");
+const cTable = require("console.table"); // makes better console.table
+const inquirer = require("inquirer"); // command line interface
+const mysql = require("mysql"); // interacting with mysql server
 
 // setup mysql connection
 const connection = mysql.createConnection({
@@ -20,12 +20,24 @@ function stopCLI() {
 }
 
 function startCLI() {
-  const query = "SELECT * FROM employee"
-  connection.query(query, (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    stopCLI();
-  })
+  // title screen
+  // main menu
+
+  /* minimum:
+    - [ ] view all employees, departments, roles
+    - [ ] add employee, department, role
+    - [ ] update employee role
+  */
+
+  /* bonus:
+    - [ ] update employee managers
+    - [ ] view employees by manager
+    - [ ] delete department(s), role(s), employee(s)
+    - [ ] View the total utilized budget of a department 
+          i.e. the combined salaries of all employees in that department
+  */
+
+  stopCLI();
 }
 
 // main ===================================================================== //
