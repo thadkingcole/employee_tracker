@@ -5,6 +5,11 @@ const inquirer = require("inquirer"); // command line interface
 const mysql = require("mysql"); // interacting with mysql server
 // required custom modules
 const questions = require("./modules/questions");
+const sqlQueries = require("./modules/sqlQueries");
+
+// empty arrays to be used later
+let departments = [];
+let roles = [];
 
 // setup mysql connection
 const connection = mysql.createConnection({
@@ -16,14 +21,74 @@ const connection = mysql.createConnection({
 });
 
 // functions ================================================================ //
+function getData() {
+  // update array of departments
+  connection.query("SELECT name FROM department", (err, res) => {
+    if (err) throw err;
+    departments = res.map((row) => row.name);
+  });
+  // update array of roles
+  connection.query("SELECT title FROM role", (err, res) => {
+    if (err) throw err;
+    roles = res.map((row) => row.title);
+  });
+}
+
 function stopCLI() {
   console.log("exiting...");
   connection.end();
 }
 
-function viewMode() {
-  console.log("view mode");
-  stopCLI();
+async function viewMode() {
+  const { whichView } = await inquirer.prompt(questions.viewQ);
+  switch (whichView) {
+    case "All Employees":
+      connection.query(sqlQueries.viewAllEmployees, (err, res) => {
+        if (err) throw err;
+        console.log(); // adds blank line to better separate table from prompt
+        console.table(res);
+        mainMenu();
+      });
+      break;
+
+    case "Employees by Department":
+      const { whichDepartment } = await inquirer.prompt({
+        name: "whichDepartment",
+        type: "list",
+        message: "View employees by which department?",
+        choices: departments,
+      });
+      const departmentQuery = "SELECT * FROM employee WHERE ?";
+      connection.query(
+        departmentQuery,
+        { department: whichDepartment },
+        (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          res.forEach((row) => console.log(row.name));
+          mainMenu();
+        }
+      );
+      break;
+
+    case "Employees by Role":
+      const { whichRole } = await inquirer.prompt({
+        name: "whichRole",
+        type: "list",
+        message: "View employees by what role?",
+        choices: roles,
+      });
+      const roleQuery = "SELECT * FROM employee WHERE ?";
+      connection.query(roleQuery, { role: whichRole }, (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        mainMenu();
+      });
+      break;
+
+    default:
+      return startCLI();
+  }
 }
 
 function addNew() {
@@ -36,24 +101,30 @@ function editMode() {
   stopCLI();
 }
 
-async function startCLI() {
-  // title screen
-  console.log(questions.mainMenu.banner);
+async function mainMenu() {
   const { mode } = await inquirer.prompt(questions.mainMenu.menu);
   switch (mode) {
     case "View Mode":
       viewMode();
       break;
+
     case "Add New":
       addNew();
       break;
+
     case "Edit Mode":
       editMode();
       break;
+
     default:
       stopCLI();
       break;
   }
+}
+
+function startCLI() {
+  console.log(questions.mainMenu.banner); // displays title banner
+  mainMenu();
   /* minimum:
     - [ ] view all employees, departments, roles
     - [ ] add employee, department, role
@@ -73,5 +144,6 @@ async function startCLI() {
 // connect to mysql & start app
 connection.connect(function (err) {
   if (err) throw err;
+  // get data
   startCLI();
 });

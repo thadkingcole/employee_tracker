@@ -1,6 +1,7 @@
 // a collection of questions/interfaces to be used by cli.js
 
 const mainMenu = {
+  // what the user sees when they start the program
   banner: `
 * ============================================================================ *
 |    _______  __   __  _______  ___      _______  __   __  _______  _______    |
@@ -20,6 +21,7 @@ const mainMenu = {
 |                                                                              |
 * ============================================================================ *
 `,
+  // the first question asked to the user
   menu: {
     name: "mode",
     type: "list",
@@ -28,5 +30,20 @@ const mainMenu = {
   },
 };
 
+// view mode questions
+const viewQ = {
+  // what does the user want to view?
+  name: "whichView",
+  type: "list",
+  message: "What would you like to view?",
+  choices: [
+    "All Employees",
+    "All Roles",
+    "All Departments",
+    "Back to Main Menu",
+  ],
+};
+//
+
 // module exports
-module.exports.mainMenu = mainMenu;
+module.exports = { mainMenu: mainMenu, viewQ: viewQ };
