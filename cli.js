@@ -21,22 +21,25 @@ const connection = mysql.createConnection({
 });
 
 // functions ================================================================ //
-function getData() {
-  // update array of departments
-  connection.query("SELECT name FROM department", (err, res) => {
-    if (err) throw err;
-    departments = res.map((row) => row.name);
-  });
-  // update array of roles
-  connection.query("SELECT title FROM role", (err, res) => {
-    if (err) throw err;
-    roles = res.map((row) => row.title);
-  });
-}
-
 function stopCLI() {
   console.log("exiting...");
   connection.end();
+}
+
+function getData() {
+  // function to update various arrays used within inquirer prompts
+
+  // update array of departments
+  connection.query(sqlQueries.viewDepartments, (err, res) => {
+    if (err) throw err;
+    departments = res.map((row) => row.name);
+  });
+
+  // update array of roles
+  connection.query(sqlQueries.viewRoles, (err, res) => {
+    if (err) throw err;
+    roles = res.map((row) => row.title);
+  });
 }
 
 async function viewMode() {
@@ -45,9 +48,8 @@ async function viewMode() {
     case "All Employees":
       connection.query(sqlQueries.viewAllEmployees, (err, res) => {
         if (err) throw err;
-        console.log(); // adds blank line to better separate table from prompt
-        console.table(res);
-        mainMenu();
+        console.table("\n", res);
+        viewMode();
       });
       break;
 
@@ -58,23 +60,22 @@ async function viewMode() {
         message: "View employees by which department?",
         choices: departments,
       });
-      const departmentQuery = "SELECT * FROM employee WHERE ?";
+      // console.log();
       connection.query(
-        departmentQuery,
-        { department: whichDepartment },
+        sqlQueries.viewEmployeesByDept,
+        { name: whichDepartment },
         (err, res) => {
           if (err) throw err;
-          console.table(res);
-          res.forEach((row) => console.log(row.name));
-          mainMenu();
+          console.table("\n", res);
+          viewMode();
         }
       );
       break;
 
-    case "Employees by Role":
+    case "All Roles":
       const { whichRole } = await inquirer.prompt({
         name: "whichRole",
-        type: "list",
+        type: "rawlist",
         message: "View employees by what role?",
         choices: roles,
       });
@@ -82,12 +83,13 @@ async function viewMode() {
       connection.query(roleQuery, { role: whichRole }, (err, res) => {
         if (err) throw err;
         console.table(res);
-        mainMenu();
+        viewMode();
       });
       break;
 
     default:
-      return startCLI();
+      startCLI();
+      break;
   }
 }
 
@@ -102,6 +104,8 @@ function editMode() {
 }
 
 async function mainMenu() {
+  // update data which each return to main menu as something might have changed
+  getData();
   const { mode } = await inquirer.prompt(questions.mainMenu.menu);
   switch (mode) {
     case "View Mode":
@@ -126,15 +130,24 @@ function startCLI() {
   console.log(questions.mainMenu.banner); // displays title banner
   mainMenu();
   /* minimum:
-    - [ ] view all employees, departments, roles
-    - [ ] add employee, department, role
+    - [ ] view all
+          - [x] employees,
+          - [x] departments,
+          - [ ] roles
+    - [ ] add
+          - [ ] employee,
+          - [ ] department,
+          - [ ] role
     - [ ] update employee role
   */
 
   /* bonus:
     - [ ] update employee managers
     - [ ] view employees by manager
-    - [ ] delete department(s), role(s), employee(s)
+    - [ ] delete
+          - [ ] department(s),
+          - [ ] role(s),
+          - [ ] employee(s)
     - [ ] View the total utilized budget of a department 
           i.e. the combined salaries of all employees in that department
   */

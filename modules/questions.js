@@ -1,7 +1,10 @@
-// a collection of questions/interfaces to be used by cli.js
+// a collection of questions/views to be used by cli.js
 
+// require inquirer
+const inquirer = require("inquirer");
+
+// what the user sees when they start the program
 const mainMenu = {
-  // what the user sees when they start the program
   banner: `
 * ============================================================================ *
 |    _______  __   __  _______  ___      _______  __   __  _______  _______    |
@@ -24,9 +27,15 @@ const mainMenu = {
   // the first question asked to the user
   menu: {
     name: "mode",
-    type: "list",
+    type: "rawlist",
     message: "What would you like to do?",
-    choices: ["View Mode", "Add New", "Edit Mode", "Exit"],
+    choices: [
+      "View Mode",
+      "Add New",
+      "Edit Mode",
+      new inquirer.Separator(),
+      "Exit",
+    ],
   },
 };
 
@@ -34,16 +43,17 @@ const mainMenu = {
 const viewQ = {
   // what does the user want to view?
   name: "whichView",
-  type: "list",
+  type: "rawlist",
   message: "What would you like to view?",
   choices: [
     "All Employees",
+    "Employees by Department",
     "All Roles",
-    "All Departments",
-    "Back to Main Menu",
+    new inquirer.Separator(),
+    "Main Menu",
   ],
 };
 //
 
 // module exports
-module.exports = { mainMenu: mainMenu, viewQ: viewQ };
+module.exports = { mainMenu, viewQ };
