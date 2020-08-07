@@ -73,16 +73,9 @@ async function viewMode() {
       break;
 
     case "All Roles":
-      const { whichRole } = await inquirer.prompt({
-        name: "whichRole",
-        type: "rawlist",
-        message: "View employees by what role?",
-        choices: roles,
-      });
-      const roleQuery = "SELECT * FROM employee WHERE ?";
-      connection.query(roleQuery, { role: whichRole }, (err, res) => {
+      connection.query(sqlQueries.viewRoles, (err, res) => {
         if (err) throw err;
-        console.table(res);
+        console.table("\n", res);
         viewMode();
       });
       break;
@@ -133,7 +126,7 @@ function startCLI() {
     - [ ] view all
           - [x] employees,
           - [x] departments,
-          - [ ] roles
+          - [x] roles
     - [ ] add
           - [ ] employee,
           - [ ] department,
