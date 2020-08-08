@@ -7,27 +7,59 @@
 
 An employee management system CLI made with node, inquirer, & mysql.
 
-![screenshot placeholder](https://placekitten.com/500/500)
+![main menu screenshot](./pics/main_menu.png)
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [Tests](#tests)
 - [Questions](#questions)
 - [Credits](#credits)
 - [License](#license)
 
 ## Installation
 
-*enter installation instructions*
+First, clone this repository using your preferred method, SSH:
+
+```git
+git clone git@github.com:thadkingcole/employee_tracker.git
+```
+
+or HTTPS:
+
+```git
+git clone https://github.com/thadkingcole/employee_tracker.git
+```
+
+Once the repo is cloned, navigate into its root directory and run "npm i" to install the require dependencies.
+
+```console
+cd employee_tracker
+npm i
+```
+
+You are now ready to start using the app!
 
 [back to Table of Contents](#table-of-contents)
 
 ## Usage
 
-*enter usage information*
+Check out this short [video](https://drive.google.com/file/d/18-OnXG7otatBESwR1K5Rhgq5Ka3qE4ql/view) demostrating the features of this app.
+
+To start the app, run ```npm start``` from its repo's root directory in your console of choice.
+
+Follow the prompts as laid out on the screen. You can use the arrow keys to choose between different choice lists, or type the number associated with the desired choice.
+
+Currently, the app is able to do the following:
+
+- view all employees
+- view employees by department
+- view list of roles
+- add new employee
+- add new role
+- add new department
+- edit/update an employee's role
 
 [back to Table of Contents](#table-of-contents)
 
@@ -36,12 +68,6 @@ An employee management system CLI made with node, inquirer, & mysql.
 Your contribution is most welcome! Please refer to the contributing guidelines when making contributions to this project.
 
 Please note that this project is released with a [Contributor Code of Conduct](code_of_conduct.md). By Participating in this project, you agree to abide by its terms.
-
-[back to Table of Contents](#table-of-contents)
-
-## Tests
-
-*enter test instructions*
 
 [back to Table of Contents](#table-of-contents)
 
@@ -55,7 +81,7 @@ Please direct any and all questions to [thadkingcole](https://github.com/thadkin
 
 I would like to thank the following people/projects/resources:
 
-- [manytools.org ascii banner generator](https://manytools.org/hacker-tools/ascii-banner/)
+- [manytools.org ascii banner generator](https://manytools.org/hacker-tools/ascii-banner/) for the "Employee Manager" main menu banner
 
 [back to Table of Contents](#table-of-contents)
 
