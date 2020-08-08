@@ -17,6 +17,12 @@ const getRoleIds = "SELECT id, title FROM role";
 const viewRoles =
   "SELECT title, salary, name AS department FROM role INNER JOIN department ON role.department_id = department.id;";
 
+// get employee ids
+const getEmployeeIds = "SELECT id, first_name, last_name FROM employee";
+
+// add employee
+const addNewEmployee = "INSERT INTO employee SET ?";
+
 // exporting the queries
 module.exports = {
   viewAllEmployees,
@@ -24,4 +30,6 @@ module.exports = {
   viewDepartments,
   getRoleIds,
   viewRoles,
+  getEmployeeIds,
+  addNewEmployee,
 };

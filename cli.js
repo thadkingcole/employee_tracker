@@ -10,6 +10,7 @@ const sqlQueries = require("./modules/sqlQueries");
 // empty arrays to be used later
 let departments = [];
 let roles = [];
+let employees = [];
 
 // setup mysql connection
 const connection = mysql.createConnection({
@@ -32,16 +33,27 @@ function getData() {
   // update array of departments
   connection.query(sqlQueries.viewDepartments, (err, res) => {
     if (err) throw err;
-    departments = res.map((row) => {
-      return { name: row.name, value: row.id };
+    departments = res.map((dept) => {
+      return { name: dept.name, value: dept.id };
     });
   });
 
   // update array of roles
   connection.query(sqlQueries.getRoleIds, (err, res) => {
     if (err) throw err;
-    roles = res.map((row) => {
-      return { name: row.title, value: row.id };
+    roles = res.map((role) => {
+      return { name: role.title, value: role.id };
+    });
+  });
+
+  // update array of employees
+  connection.query(sqlQueries.getEmployeeIds, (err, res) => {
+    if (err) throw err;
+    employees = res.map((employee) => {
+      return {
+        name: `${employee.first_name} ${employee.last_name}`,
+        value: employee.id,
+      };
     });
   });
 }
@@ -89,9 +101,45 @@ async function viewMode() {
   }
 }
 
-function addEmployee() {
-  console.log("add new what?");
-  stopCLI();
+async function addEmployee() {
+  // get first and last name of employee
+  const { first_name, last_name } = await inquirer.prompt(
+    questions.addEmployee
+  );
+
+  // assign employee a role (could be a new role)
+  roles.push(new inquirer.Separator(), {
+    name: "Add new role not listed here",
+    value: "new",
+  });
+  const { role_id } = await inquirer.prompt({
+    name: "role_id",
+    type: "rawlist",
+    message: "Select role for new employee:",
+    choices: roles,
+    pageSize: roles.length * 2, // all options visible unless window small
+  });
+  if (role_id === "new") {
+    // TODO new role needs to be added
+    addRole();
+  }
+  // assign employee a manager (could be none/null)
+  employees.push(new inquirer.Separator(), "No Manager");
+  let { manager_id } = await inquirer.prompt({
+    name: "manager_id",
+    type: "rawlist",
+    message: "Assign new employee a manager:",
+    choices: employees,
+    pageSize: employees.length * 2, // all options visible unless window small
+  });
+  if (manager_id === "No Manager") manager_id = null;
+  // add employee to database
+  const newEmployee = { first_name, last_name, role_id, manager_id };
+  connection.query(sqlQueries.addNewEmployee, newEmployee, (err, res) => {
+    if (err) throw err;
+    console.log("added ", first_name, last_name);
+  });
+  startCLI();
 }
 
 function editMode() {
@@ -130,7 +178,7 @@ async function startCLI() {
           - [x] departments,
           - [x] roles
     - [ ] add
-          - [ ] employee,
+          - [x] employee,
           - [ ] department,
           - [ ] role
     - [ ] update employee role

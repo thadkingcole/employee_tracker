@@ -77,7 +77,21 @@ const viewQ = {
     "Main Menu",
   ],
 };
-//
+
+// add employee (get name)
+const addEmployee = [
+  {
+    name: "first_name",
+    type: "input",
+    message: `Enter the following information about new employee:
+  First Name:`,
+  },
+  {
+    name: "last_name",
+    type: "input",
+    message: "Last Name:",
+  },
+];
 
 // module exports
-module.exports = { mainMenu, viewQ };
+module.exports = { mainMenu, viewQ, addEmployee };
