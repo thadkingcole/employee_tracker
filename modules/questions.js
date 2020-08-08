@@ -93,5 +93,23 @@ const addEmployee = [
   },
 ];
 
+// add new role
+const addRole = [
+  {
+    name: "title",
+    type: "input",
+    message: "Enter the name of the new role",
+  },
+  {
+    name: "salary",
+    type: "input",
+    message: "Enter salary for new role",
+    validate: (value) =>
+      Number.isInteger(parseInt(value, 10)) && parseInt(value, 10) > 0
+        ? true
+        : "Enter a valid salary (positive integer)",
+  },
+];
+
 // module exports
-module.exports = { mainMenu, viewQ, addEmployee };
+module.exports = { mainMenu, viewQ, addEmployee, addRole };
