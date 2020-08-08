@@ -1,5 +1,6 @@
 // global variables ========================================================= //
 // required node modules
+require("dotenv").config(); // allows use of env variables
 const cTable = require("console.table"); // makes better console.table
 const inquirer = require("inquirer"); // command line interface
 const mysql = require("mysql"); // interacting with mysql server
@@ -17,7 +18,7 @@ const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "",
+  password: process.env.DB_PASSWORD,
   database: "employees",
 });
 
@@ -72,7 +73,7 @@ async function viewMode() {
     case "by dept":
       const { whichDepartment } = await inquirer.prompt({
         name: "whichDepartment",
-        type: "list",
+        type: "rawlist",
         message: "View employees by which department?",
         choices: departments.map((dept) => dept.name),
       });
@@ -101,28 +102,61 @@ async function viewMode() {
   }
 }
 
+async function addDept() {
+  // get name of new dept
+  const { newDept } = await inquirer.prompt(questions.addDept);
+
+  // add new dept to db
+  connection.query(sqlQueries.addNewDept, newDept, (err) => {
+    if (err) throw err;
+    // success!
+    console.log("\n", "Successfully added new department: ", newDept, "\n");
+    // back to add menu
+    addMode();
+  });
+}
+
+async function addRole() {
+  // get name of role
+  // get salary for role
+  const { title, salary } = await inquirer.prompt(questions.addRole);
+  console.log({ title, salary });
+
+  // assign role to a department
+  let { department_id } = await inquirer.prompt({
+    name: "department_id",
+    type: "rawlist",
+    message: "Assign role to a department:",
+    choices: departments,
+    pageSize: departments.length * 2, // all options visible unless window small
+  });
+
+  // add role to database
+  const newRole = { title, salary, department_id };
+  connection.query(sqlQueries.addNewRole, newRole, (err) => {
+    if (err) throw err;
+    // success!
+    console.log("\n", "Successfully added new role: ", title, "\n");
+    // back to add menu
+    addMode();
+  });
+}
+
 async function addEmployee() {
   // get first and last name of employee
   const { first_name, last_name } = await inquirer.prompt(
     questions.addEmployee
   );
 
-  // assign employee a role (could be a new role)
-  roles.push(new inquirer.Separator(), {
-    name: "Add new role not listed here",
-    value: "new",
-  });
-  const { role_id } = await inquirer.prompt({
+  // assign employee a role
+  var { role_id } = await inquirer.prompt({
     name: "role_id",
     type: "rawlist",
     message: "Select role for new employee:",
     choices: roles,
     pageSize: roles.length * 2, // all options visible unless window small
   });
-  if (role_id === "new") {
-    // TODO new role needs to be added
-    addRole();
-  }
+
   // assign employee a manager (could be none/null)
   employees.push(new inquirer.Separator(), "No Manager");
   let { manager_id } = await inquirer.prompt({
@@ -133,13 +167,47 @@ async function addEmployee() {
     pageSize: employees.length * 2, // all options visible unless window small
   });
   if (manager_id === "No Manager") manager_id = null;
+
   // add employee to database
   const newEmployee = { first_name, last_name, role_id, manager_id };
   connection.query(sqlQueries.addNewEmployee, newEmployee, (err, res) => {
     if (err) throw err;
-    console.log("added ", first_name, last_name);
+    // success!
+    console.log(
+      "\n Successfully added new employee: ",
+      first_name,
+      last_name,
+      "\n"
+    );
+    // back to add menu
+    addMode();
   });
-  startCLI();
+}
+
+async function addMode() {
+  // something might have been added, lets update data
+  getData();
+  const { addWhat } = await inquirer.prompt(questions.addQ);
+  switch (addWhat) {
+    // add new employee
+    case "employee":
+      addEmployee();
+      break;
+
+    // add new role
+    case "role":
+      addRole();
+      break;
+
+    // add new dept
+    case "dept":
+      addDept();
+      break;
+
+    // back to main menu
+    default:
+      startCLI();
+  }
 }
 
 function editMode() {
@@ -160,7 +228,7 @@ async function startCLI() {
 
     // add employee
     case "add":
-      addEmployee();
+      addMode();
       break;
 
     // edit mode
@@ -173,14 +241,14 @@ async function startCLI() {
       break;
   }
   /* minimum:
-    - [ ] view all
+    - [x] view all
           - [x] employees,
           - [x] departments,
           - [x] roles
-    - [ ] add
+    - [x] add
           - [x] employee,
-          - [ ] department,
-          - [ ] role
+          - [x] department,
+          - [x] role
     - [ ] update employee role
   */
 
@@ -200,6 +268,6 @@ async function startCLI() {
 // connect to mysql & start app
 connection.connect(function (err) {
   if (err) throw err;
-  // get data
+  // start app
   startCLI();
 });
