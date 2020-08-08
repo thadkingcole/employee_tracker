@@ -49,7 +49,7 @@ function getData() {
 async function viewMode() {
   const { whichView } = await inquirer.prompt(questions.viewQ);
   switch (whichView) {
-    case "All Employees":
+    case "employees":
       connection.query(sqlQueries.viewAllEmployees, (err, res) => {
         if (err) throw err;
         console.table("\n", res);
@@ -57,7 +57,7 @@ async function viewMode() {
       });
       break;
 
-    case "Employees by Department":
+    case "by dept":
       const { whichDepartment } = await inquirer.prompt({
         name: "whichDepartment",
         type: "list",
@@ -75,7 +75,7 @@ async function viewMode() {
       );
       break;
 
-    case "All Roles":
+    case "roles":
       connection.query(sqlQueries.viewRoles, (err, res) => {
         if (err) throw err;
         console.table("\n", res);
@@ -89,7 +89,7 @@ async function viewMode() {
   }
 }
 
-function addNew() {
+function addEmployee() {
   console.log("add new what?");
   stopCLI();
 }
@@ -105,15 +105,18 @@ async function startCLI() {
   console.log(questions.mainMenu.banner); // displays title banner
   const { mode } = await inquirer.prompt(questions.mainMenu.menu);
   switch (mode) {
-    case "View Mode":
+    // view mode
+    case "view":
       viewMode();
       break;
 
-    case "Add New":
-      addNew();
+    // add employee
+    case "add":
+      addEmployee();
       break;
 
-    case "Edit Mode":
+    // edit mode
+    case "edit":
       editMode();
       break;
 

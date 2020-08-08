@@ -30,9 +30,21 @@ const mainMenu = {
     type: "rawlist",
     message: "What would you like to do?",
     choices: [
-      "View Mode",
-      "Add New",
-      "Edit Mode",
+      // view mode
+      {
+        name: "View Mode",
+        value: "view",
+      },
+      // add employee
+      {
+        name: "Add Employee",
+        value: "add",
+      },
+      // edit mode
+      {
+        name: "Edit Mode",
+        value: "edit",
+      },
       new inquirer.Separator(),
       "Exit",
     ],
@@ -46,9 +58,21 @@ const viewQ = {
   type: "rawlist",
   message: "What would you like to view?",
   choices: [
-    "All Employees",
-    "Employees by Department",
-    "All Roles",
+    // view all employees
+    {
+      name: "All Employees",
+      value: "employees",
+    },
+    // view employees by department
+    {
+      name: "Employees by Department",
+      value: "by dept",
+    },
+    // view list of all roles
+    {
+      name: "All Roles",
+      value: "roles",
+    },
     new inquirer.Separator(),
     "Main Menu",
   ],
