@@ -7,8 +7,11 @@ const viewAllEmployees =
 // view employees by department
 const viewEmployeesByDept = viewAllEmployees + " WHERE ?";
 
-// view list of departments
-const viewDepartments = "SELECT name FROM department";
+// view list of departments - also used to get department ids
+const viewDepartments = "SELECT id, name FROM department";
+
+// get role ids
+const getRoleIds = "SELECT id, title FROM role";
 
 // view list of roles
 const viewRoles =
@@ -19,5 +22,6 @@ module.exports = {
   viewAllEmployees,
   viewEmployeesByDept,
   viewDepartments,
+  getRoleIds,
   viewRoles,
 };

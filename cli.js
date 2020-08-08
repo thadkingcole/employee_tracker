@@ -32,13 +32,17 @@ function getData() {
   // update array of departments
   connection.query(sqlQueries.viewDepartments, (err, res) => {
     if (err) throw err;
-    departments = res.map((row) => row.name);
+    departments = res.map((row) => {
+      return { name: row.name, value: row.id };
+    });
   });
 
   // update array of roles
-  connection.query(sqlQueries.viewRoles, (err, res) => {
+  connection.query(sqlQueries.getRoleIds, (err, res) => {
     if (err) throw err;
-    roles = res.map((row) => row.title);
+    roles = res.map((row) => {
+      return { name: row.title, value: row.id };
+    });
   });
 }
 
@@ -58,9 +62,8 @@ async function viewMode() {
         name: "whichDepartment",
         type: "list",
         message: "View employees by which department?",
-        choices: departments,
+        choices: departments.map((dept) => dept.name),
       });
-      // console.log();
       connection.query(
         sqlQueries.viewEmployeesByDept,
         { name: whichDepartment },
@@ -96,9 +99,10 @@ function editMode() {
   stopCLI();
 }
 
-async function mainMenu() {
+async function startCLI() {
   // update data which each return to main menu as something might have changed
   getData();
+  console.log(questions.mainMenu.banner); // displays title banner
   const { mode } = await inquirer.prompt(questions.mainMenu.menu);
   switch (mode) {
     case "View Mode":
@@ -117,11 +121,6 @@ async function mainMenu() {
       stopCLI();
       break;
   }
-}
-
-function startCLI() {
-  console.log(questions.mainMenu.banner); // displays title banner
-  mainMenu();
   /* minimum:
     - [ ] view all
           - [x] employees,
