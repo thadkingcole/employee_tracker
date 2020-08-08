@@ -26,6 +26,9 @@ const addNewEmployee = "INSERT INTO employee SET ?";
 // add role
 const addNewRole = "INSERT INTO role SET ?";
 
+// add dept
+const addNewDept = "INSERT INTO department SET name = ?";
+
 // exporting the queries
 module.exports = {
   viewAllEmployees,
@@ -36,4 +39,5 @@ module.exports = {
   getEmployeeIds,
   addNewEmployee,
   addNewRole,
+  addNewDept,
 };

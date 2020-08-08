@@ -37,7 +37,7 @@ const mainMenu = {
       },
       // add employee
       {
-        name: "Add Employee",
+        name: "Add Mode",
         value: "add",
       },
       // edit mode
@@ -78,6 +78,29 @@ const viewQ = {
   ],
 };
 
+// add mode qs
+const addQ = {
+  name: "addWhat",
+  type: "rawlist",
+  message: "What would you like to add?",
+  choices: [
+    {
+      name: "New Department",
+      value: "dept",
+    },
+    {
+      name: "New Role",
+      value: "role",
+    },
+    {
+      name: "New employee",
+      value: "employee",
+    },
+    new inquirer.Separator(),
+    "Main Menu",
+  ],
+};
+
 // add employee (get name)
 const addEmployee = [
   {
@@ -111,5 +134,11 @@ const addRole = [
   },
 ];
 
+const addDept = {
+  name: "newDept",
+  type: "input",
+  message: "Enter the name of the new department:",
+};
+
 // module exports
-module.exports = { mainMenu, viewQ, addEmployee, addRole };
+module.exports = { mainMenu, viewQ, addQ, addEmployee, addRole, addDept };
