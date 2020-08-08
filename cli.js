@@ -24,7 +24,8 @@ const connection = mysql.createConnection({
 
 // functions ================================================================ //
 function stopCLI() {
-  console.log("exiting...");
+  console.clear();
+  console.log("goodbye!");
   connection.end();
 }
 
@@ -63,6 +64,7 @@ async function viewMode() {
   const { whichView } = await inquirer.prompt(questions.viewQ);
   switch (whichView) {
     case "employees":
+      console.clear();
       connection.query(sqlQueries.viewAllEmployees, (err, res) => {
         if (err) throw err;
         console.table("\n", res);
@@ -77,6 +79,7 @@ async function viewMode() {
         message: "View employees by which department?",
         choices: departments.map((dept) => dept.name),
       });
+      console.clear();
       connection.query(
         sqlQueries.viewEmployeesByDept,
         { name: whichDepartment },
@@ -89,6 +92,7 @@ async function viewMode() {
       break;
 
     case "roles":
+      console.clear();
       connection.query(sqlQueries.viewRoles, (err, res) => {
         if (err) throw err;
         console.table("\n", res);
@@ -97,6 +101,7 @@ async function viewMode() {
       break;
 
     default:
+      console.clear();
       startCLI();
       break;
   }
@@ -120,7 +125,6 @@ async function addRole() {
   // get name of role
   // get salary for role
   const { title, salary } = await inquirer.prompt(questions.addRole);
-  console.log({ title, salary });
 
   // assign role to a department
   let { department_id } = await inquirer.prompt({
@@ -149,7 +153,7 @@ async function addEmployee() {
   );
 
   // assign employee a role
-  var { role_id } = await inquirer.prompt({
+  const { role_id } = await inquirer.prompt({
     name: "role_id",
     type: "rawlist",
     message: "Select role for new employee:",
@@ -206,13 +210,52 @@ async function addMode() {
 
     // back to main menu
     default:
+      console.clear();
       startCLI();
   }
 }
 
-function editMode() {
-  console.log("edit mode");
-  stopCLI();
+async function changeRole() {
+  // update an employee's role
+  // add back button to employee array
+  employees.push(new inquirer.Separator(), "Main Menu");
+
+  // first, select which employee to update
+  const { employeeToUpdate } = await inquirer.prompt({
+    name: "employeeToUpdate",
+    type: "rawlist",
+    message: "Select the employee to change their role:",
+    choices: employees,
+    pageSize: employees.length * 2,
+  });
+
+  // handle going back to main menu
+  if (employeeToUpdate === "Main Menu") {
+    startCLI();
+  } else {
+    // an employee was selected, let's change their role
+    // select the new role to assign them.
+    const { role_id } = await inquirer.prompt({
+      name: "role_id",
+      type: "rawlist",
+      message: "Select role for new employee:",
+      choices: roles,
+      pageSize: roles.length * 2, // all options visible unless window small
+    });
+
+    // add updated role to db
+    connection.query(
+      sqlQueries.changeRole,
+      [{ role_id }, { id: employeeToUpdate }],
+      (err) => {
+        if (err) throw err;
+        // success!
+        console.clear();
+        console.log("\nSuccessfully updated role!\n");
+        startCLI();
+      }
+    );
+  }
 }
 
 async function startCLI() {
@@ -232,36 +275,14 @@ async function startCLI() {
       break;
 
     // edit mode
-    case "edit":
-      editMode();
+    case "update":
+      changeRole();
       break;
 
     default:
       stopCLI();
       break;
   }
-  /* minimum:
-    - [x] view all
-          - [x] employees,
-          - [x] departments,
-          - [x] roles
-    - [x] add
-          - [x] employee,
-          - [x] department,
-          - [x] role
-    - [ ] update employee role
-  */
-
-  /* bonus:
-    - [ ] update employee managers
-    - [ ] view employees by manager
-    - [ ] delete
-          - [ ] department(s),
-          - [ ] role(s),
-          - [ ] employee(s)
-    - [ ] View the total utilized budget of a department 
-          i.e. the combined salaries of all employees in that department
-  */
 }
 
 // main ===================================================================== //
@@ -269,5 +290,6 @@ async function startCLI() {
 connection.connect(function (err) {
   if (err) throw err;
   // start app
+  console.clear();
   startCLI();
 });

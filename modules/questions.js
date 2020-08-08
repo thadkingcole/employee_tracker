@@ -42,8 +42,8 @@ const mainMenu = {
       },
       // edit mode
       {
-        name: "Edit Mode",
-        value: "edit",
+        name: "Update an employee's role",
+        value: "update",
       },
       new inquirer.Separator(),
       "Exit",
